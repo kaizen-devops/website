@@ -1,0 +1,21 @@
+:root {
+  /* Primary brand colors */
+  --md-primary-fg-color: #1D74B7;          /* Cloud outline (deep blue) */
+  --md-primary-fg-color--light: #4CB2E2;   /* Light blue (square logo) */
+  --md-primary-fg-color--dark: #104C78;    /* Darker shade for hover or accents */
+
+  /* Background colors (dark theme) */
+  --md-primary-bg-color: #0D1117;          /* Near-black background */
+  --md-primary-bg-color--light: #161B22;   /* Slightly lighter for contrast */
+
+  /* Accent and secondary */
+  --md-accent-fg-color: #3B7ABD;           /* Used for DEVOPS text */
+  --md-accent-bg-color: #1E2A35;
+
+  /* Optional text colors */
+  --md-text-color: #FFFFFF;                /* Base text */
+  --md-muted-text-color: #C9D1D9;          /* Muted text for secondary items */
+
+  /* Optional: Kubernetes blue if needed */
+  --kubernetes-blue: #326CE5;              /* Icon hex color */
+}
