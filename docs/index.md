@@ -57,7 +57,7 @@ Every engagement starts with listening — understanding what really matters. Th
 ## Ready to Build?
 
 Let’s bring continuous improvement to your team, platform, or process.  
-📩 [kaizendevops@pm.me](mailto:kaizendevops@pm.me)
+📩 [kaizendevops](mailto:kaizendevops)
 
 
 ![kaizendevops.png](images/kaizendevops.png)
