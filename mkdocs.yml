@@ -1,8 +1,7 @@
 site_name: kaizendevops
 theme:
-  logo: images/kaizendevops.png
+  logo: images/tux.png
   name: material
-  custom_dir: overrides
   features:
     - navigation.tracking
     - navigation.tabs
@@ -33,22 +32,6 @@ theme:
         name: Switch to Light Mode
       primary: custom
       accent: blue
-  plugins:
-    - privacy:
-        links_attr_map:
-          target: _blank
-    - mkdocs-macro
-    - mkdocs-video:
-        is_video: True
-        video_muted: True
-        video_controls: True
-        video_type: mp4
-        css_style:
-          width: "50%"
-  extra:
-    social:
-      - type: fontawesome/brands/github-alt
-        link: https://kaizendevops.nl
   icon:
     admonition:
       note: octicons/tag-16
@@ -63,11 +46,54 @@ theme:
       bug: octicons/bug-16
       example: octicons/beaker-16
       quote: octicons/quote-16
+
+extra:
+  social:
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/renehoos/
+      name: LinkedIn
+    - icon: fontawesome/solid/envelope
+      link: mailto:kaizendevops@pm.me
+      name: Email
+
+plugins:
+  - search
+  - i18n:
+      docs_structure: suffix
+      languages:
+        - locale: en
+          name: English
+          build: true
+          default: true
+        - locale: nl
+          name: Nederlands
+          build: true
+          copyright: |
+            &copy; 2025–2026 <a href="https://kaizendevops.com" target="_blank" rel="noopener">kaizendevops</a>. Alle rechten voorbehouden. KVK: 12345678
+          nav_translations:
+            Welcome: Welkom
+            Persona: Persona
+            Greetings: Kennismaking
+            Approach: Aanpak
+            Work ethics: Werkethiek
+            Contact: Contact
+  - privacy:
+      links_attr_map:
+        target: _blank
+  - macros
+  - mkdocs-video:
+      is_video: True
+      video_muted: True
+      video_controls: True
+      video_type: mp4
+      css_style:
+        width: "50%"
+
 extra_css:
   - stylesheets/extra.css
 
 copyright: |
-  &copy; 2025 <a href="https://kaizendevops.com" target="_blank" rel="noopener"><kaizendevops. All rights reserved></a>
+  &copy; 2025–2026 <a href="https://kaizendevops.com" target="_blank" rel="noopener">kaizendevops</a>. All rights reserved. KVK: 12345678 #todo get a real kvk number
 
 nav:
   - Welcome: index.md
@@ -75,7 +101,9 @@ nav:
       - Greetings: content/persona/who_am_i.md
   - Approach:
       - Work ethics: content/approach/way_of_working.md
+  - Contact: content/contact/contact.md
 markdown_extensions:
+  - attr_list
   - admonition
   - def_list
   - pymdownx.tasklist:
@@ -88,4 +116,8 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.details
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg

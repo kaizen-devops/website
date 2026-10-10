@@ -5,7 +5,7 @@ FROM python:3.13 AS build
 ENV PIP_ROOT_USER_ACTION=ignore
 
 # Install MkDocs and required plugins
-RUN pip install mkdocs-material mkdocs-macros-plugin mkdocs-glightbox mkdocs-video
+RUN pip install mkdocs-material mkdocs-macros-plugin mkdocs-glightbox mkdocs-video mkdocs-static-i18n
 
 # Set working directory and copy local files
 WORKDIR /app
