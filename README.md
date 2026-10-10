@@ -86,3 +86,51 @@ Then open http://localhost:8080.
 > ```bash
 > docker build -t rene007/kaizendevops:tagname -f Containerfile . && docker push rene007/kaizendevops:tagname
 > ```
+
+## CI: build, push and sign
+
+`.github/workflows/build-image.yml` builds the image from the `Containerfile`, pushes it to Docker Hub and signs it with [cosign](https://docs.sigstore.dev/) using our own key pair. The signature is stored next to the image on Docker Hub only, so nothing is written to the public Sigstore transparency log.
+
+- **Push to `main`**: pushes `main`, `latest` and `sha-<short>` tags, then signs the image.
+- **Tag `v1.2.3`**: pushes `1.2.3`, `1.2` and `sha-<short>` tags, then signs the image.
+- **Pull request**: builds only, without pushing or signing.
+
+### Create the signing key pair (once)
+
+```bash
+cosign generate-key-pair
+```
+
+cosign asks for a password and writes two files:
+
+- `cosign.key`: the encrypted private key. **Never commit it** (it is in `.gitignore`). Keep a copy in your password manager.
+- `cosign.pub`: the public key. Safe to share and commit; it is what you verify with.
+
+### Repository secrets
+
+Add these under Settings → Secrets and variables → Actions:
+
+| Secret               | Value                                                     |
+| -------------------- | --------------------------------------------------------- |
+| `DOCKERHUB_USERNAME` | `rene007`                                                 |
+| `DOCKERHUB_TOKEN`    | A Docker Hub access token with *Read & Write* scope       |
+| `COSIGN_PRIVATE_KEY` | The full contents of `cosign.key`                         |
+| `COSIGN_PASSWORD`    | The password you entered during `cosign generate-key-pair` |
+
+With the GitHub CLI:
+
+```bash
+gh secret set COSIGN_PRIVATE_KEY < cosign.key
+gh secret set COSIGN_PASSWORD        # prompts for the value
+gh secret set DOCKERHUB_USERNAME --body rene007
+gh secret set DOCKERHUB_TOKEN        # prompts for the value
+```
+
+### Verify a signature
+
+Because there is no transparency log entry, verification needs `--insecure-ignore-tlog`:
+
+```bash
+cosign verify --key cosign.pub --insecure-ignore-tlog \
+  docker.io/rene007/kaizendevops:latest
+```
