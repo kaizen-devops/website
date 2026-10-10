@@ -91,8 +91,16 @@ Then open http://localhost:8080.
 
 `.github/workflows/build-image.yml` builds the image from the `Containerfile`, pushes it to Docker Hub and signs it with [cosign](https://docs.sigstore.dev/) using our own key pair. The signature is stored next to the image on Docker Hub only, so nothing is written to the public Sigstore transparency log.
 
-- **Push to `main`**: pushes `main`, `latest` and `sha-<short>` tags, then signs the image.
-- **Tag `v1.2.3`**: pushes `1.2.3`, `1.2` and `sha-<short>` tags, then signs the image.
+- **Push to `main`**: looks up the highest `v.X.Y.Z` tag on Docker Hub, bumps it, pushes the image with only that new tag, then signs it. Which number goes up depends on the pushed commit messages:
+
+  | Commit message contains | Example            |
+  | ----------------------- | ------------------ |
+  | nothing special         | `v.0.3.7` → `v.0.3.8` |
+  | `#minor`                | `v.0.3.7` → `v.0.4.0` |
+  | `#major`                | `v.0.3.7` → `v.1.0.0` |
+
+  The keyword can be in any commit of the push (or of a merged PR). `#major` wins over `#minor`.
+- **Manual run** (Actions → Build, push and sign image → Run workflow): pick `patch`, `minor` or `major` from the dropdown.
 - **Pull request**: builds only, without pushing or signing.
 
 ### Create the signing key pair (once)

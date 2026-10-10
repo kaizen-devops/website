@@ -3,10 +3,20 @@ name: Build, push and sign image
 on:
   push:
     branches: [main]
-    tags: ["v*"]
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      bump:
+        description: Which version number to bump
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+# Two runs at once would compute the same next version, so run them one by one
+concurrency:
+  group: build-image-${{ github.ref }}
+  cancel-in-progress: false
 
 env:
   IMAGE: docker.io/rene007/kaizendevops
@@ -35,18 +45,51 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Determine next version
+        id: version
+        if: github.event_name != 'pull_request'
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          COMMIT_MESSAGES: ${{ toJSON(github.event.commits.*.message) }}
+          BUMP_INPUT: ${{ inputs.bump }}
+        # Finds the highest v.X.Y.Z tag on Docker Hub and bumps it. "#major" or
+        # "#minor" in any pushed commit message (or the manual run input) picks
+        # the number to bump; otherwise the patch number goes up.
+        # Other tags (latest, main, sha-*, cosign signatures) are ignored.
+        run: |
+          # Fails the job if the tags can't be listed, instead of restarting at v.0.0.1
+          tags=$(skopeo list-tags --creds "${DOCKERHUB_USERNAME}:${DOCKERHUB_TOKEN}" "docker://${IMAGE}" \
+            | jq -r '.Tags[]')
+          latest=$(printf '%s\n' "${tags}" \
+            | { grep -E '^v\.?[0-9]+\.[0-9]+\.[0-9]+$' || true; } \
+            | sed -E 's/^v\.?//' \
+            | sort -t. -k1,1n -k2,2n -k3,3n \
+            | tail -n1)
+          if grep -q '#major' <<< "${COMMIT_MESSAGES}" || [ "${BUMP_INPUT}" = major ]; then
+            bump=major
+          elif grep -q '#minor' <<< "${COMMIT_MESSAGES}" || [ "${BUMP_INPUT}" = minor ]; then
+            bump=minor
+          else
+            bump=patch
+          fi
+          IFS=. read -r major minor patch <<< "${latest:-0.0.0}"
+          case "${bump}" in
+            major) next="$((major + 1)).0.0" ;;
+            minor) next="${major}.$((minor + 1)).0" ;;
+            patch) next="${major}.${minor}.$((patch + 1))" ;;
+          esac
+          echo "Latest version: ${latest:-none}, bump: ${bump}, next version: v.${next}"
+          echo "tag=v.${next}" >> "${GITHUB_OUTPUT}"
+
       - name: Extract image metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE }}
           tags: |
-            type=ref,event=branch
+            type=raw,value=${{ steps.version.outputs.tag }},enable=${{ github.event_name != 'pull_request' }}
             type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha,format=short
-            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push
         id: build
@@ -68,7 +111,6 @@ jobs:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         # An empty signing config keeps the signature out of the public Rekor
         # transparency log; the signature is only stored next to the image.
-        # All tags share one digest, so a single signature covers every tag.
         run: |
           cosign signing-config create --out "${RUNNER_TEMP}/signing-config.json"
           cosign sign --yes \
