@@ -17,3 +17,4 @@ RUN mkdocs build
 # Serve Stage
 FROM docker.io/nginxinc/nginx-unprivileged:stable-alpine
 COPY --from=build --chown=nginx:nginx /app/site /usr/share/nginx/html
+COPY nginx/redirects.conf /etc/nginx/conf.d/redirects.conf
