@@ -1,4 +1,5 @@
 site_name: kaizendevops
+site_url: https://kaizendevops.nl/
 theme:
   logo: images/tux.png
   name: material
@@ -69,7 +70,7 @@ plugins:
           name: Nederlands
           build: true
           copyright: |
-            &copy; 2025–2026 <a href="https://kaizendevops.com" target="_blank" rel="noopener">kaizendevops</a>. Alle rechten voorbehouden. KVK: 12345678
+            &copy; 2025–2026 <a href="https://kaizendevops.nl" target="_blank" rel="noopener">kaizendevops</a>. Alle rechten voorbehouden. KVK: 12345678
           nav_translations:
             Welcome: Welkom
             Persona: Persona
@@ -92,8 +93,9 @@ plugins:
 extra_css:
   - stylesheets/extra.css
 
+# TODO: get a real KVK number (also in the nl copyright above)
 copyright: |
-  &copy; 2025–2026 <a href="https://kaizendevops.com" target="_blank" rel="noopener">kaizendevops</a>. All rights reserved. KVK: 12345678 #todo get a real kvk number
+  &copy; 2025–2026 <a href="https://kaizendevops.nl" target="_blank" rel="noopener">kaizendevops</a>. All rights reserved. KVK: 12345678
 
 nav:
   - Welcome: index.md

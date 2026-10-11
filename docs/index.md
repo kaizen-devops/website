@@ -41,11 +41,11 @@ Whether I’m automating infrastructure, building CI/CD pipelines, or guiding te
 
 ## Services
 
-- 🚀 **Infrastructure as Code** — terraform, ansible, gitops
-- 📦 **Containers & Platforms** — kubernetes, openshift, podman
-- 🔁 **CI/CD Automation** — github actions, gitlab ci, argocd
-- 📊 **Monitoring & Observability** — prometheus, grafana, zabbix
-- 🔐 **Security & Compliance** — devsecops integration
+- 🚀 **Infrastructure as Code** — e.g. Terraform, Ansible, GitOps
+- 📦 **Containers & Platforms** — e.g. Kubernetes, OpenShift, Podman
+- 🔁 **CI/CD Automation** — e.g. GitHub Actions, GitLab CI, Argo CD
+- 📊 **Monitoring & Observability** — e.g. Prometheus, Grafana, Zabbix
+- 🔐 **Security & Compliance** — DevSecOps integration
 
 ---
 
