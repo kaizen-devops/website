@@ -1,8 +1,8 @@
 :root {
   /* Primary brand colors */
-  --md-primary-fg-color: #1D74B7;          /* Cloud outline (deep blue) */
-  --md-primary-fg-color--light: #4CB2E2;   /* Light blue (square logo) */
-  --md-primary-fg-color--dark: #104C78;    /* Darker shade for hover or accents */
+  --md-primary-fg-color: #326CE5;          /* Kubernetes blue (kubernetes.io primary) */
+  --md-primary-fg-color--light: #84A7EF;   /* Lighter Kubernetes blue */
+  --md-primary-fg-color--dark: #234CA0;    /* Darker shade for hover or accents */
 
   /* Accent and secondary */
   --md-accent-fg-color: #3B7ABD;           /* Used for DEVOPS text */
@@ -12,6 +12,11 @@
   --cta-color: #F28C28;
   --cta-color-hover: #D4760F;
   --cta-text-color: #1A1A1A;               /* Dark text for AA contrast on --cta-color */
+}
+
+/* Dark mode: the primary blue is too dark for links on the slate background */
+[data-md-color-scheme="slate"] {
+  --md-typeset-a-color: #84A7EF;
 }
 
 /* Call-to-action buttons: .md-button .md-button--cta */
